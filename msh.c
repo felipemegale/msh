@@ -15,6 +15,7 @@ void list(void);
 void crtdir(char*);
 void chgdir(char*);
 void crtfile(char*);
+void rmfile(char*);
 
 int main()
 {
@@ -53,7 +54,7 @@ int main()
         }
 
         // implementacao de troca de diretorio
-        else if((strcmp(command, "chgdir") == 0) || (strcmp(command, "chgdir\n") == 0))
+        else if ((strcmp(command, "chgdir") == 0) || (strcmp(command, "chgdir\n") == 0))
         {
             if (strcmp(command, "chgdir\n") == 0)
                 printf("You must specify where to go!\n");
@@ -66,7 +67,7 @@ int main()
         }
 
         // implementacao de criacao de arquivo
-        else if(strcmp(command, "crtfile") == 0 || (strcmp(command, "crtfile\n") == 0))
+        else if ((strcmp(command, "crtfile") == 0) || (strcmp(command, "crtfile\n") == 0))
         {
             if (strcmp(command, "crtfile\n") == 0)
                 printf("A file must have a name!\n");
@@ -75,6 +76,19 @@ int main()
                 param = strtok(NULL, " ");
                 param[strlen(param)-1] = '\0';
                 crtfile(param);
+            }
+        }
+
+        // implementacao da remocao de arquivo
+        else if ((strcmp(command, "rmfile") == 0) || (strcmp(command, "rmfile\n") == 0))
+        {
+            if (strcmp(command, "rmfile\n") == 0)
+                printf("A FILE name must be specified!\n");
+            else
+            {
+                param = strtok(NULL, " ");
+                param[strlen(param)-1] = '\0';
+                rmfile(param);
             }
         }
 
@@ -158,13 +172,26 @@ void crtfile(char *filename)
 
 }
 
+// removes a file in the current dir
+void rmfile(char *filename)
+{
+    int extstat;
+
+    extstat = remove(filename);
+    
+    if (extstat == -1)
+        printf("RMFILE exit status: %d\n", extstat);
+}
+
+
+
 void printhelp()
 {
     printf("crtdir - Create a directory\n"); // done
     printf("chgdir  - Change to a directory\n"); // done
     printf("list - List contents of current directory\n"); // done
     printf("crtfile - Creates a file in the current directory\n"); // done
-    printf("20 - Delete file\n");
+    printf("rmfile - Deletes a file in the current directory\n"); // done
     printf("25 - Create symlink to file\n");
     printf("30 - Remove symlink to file\n");
     printf("35 - Show contents of a file\n");
