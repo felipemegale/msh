@@ -18,6 +18,7 @@ void crtfile(char*);
 void rmfile(char*);
 void crtslf(char*, char*);
 void readslf(char*);
+void rmslf(char*);
 
 int main()
 {
@@ -128,6 +129,20 @@ int main()
             }
         }
 
+        // implementacao da remocao de link simbolico
+        else if ((strcmp(command, "rmslf") == 0) || (strcmp(command, "rmslf\n") == 0))
+        {
+            if (strcmp(command, "rmslf\n") == 0)
+                printf("A linked file's name must be specified");
+            else
+            {
+                param = strtok(NULL, " ");
+                param[strlen(param)-1] = '\0';
+
+                rmslf(param);
+            }
+        }
+
         // prints help menu
         else if (strcmp(command, "help\n")  == 0) printhelp();
         
@@ -170,8 +185,6 @@ void crtdir(char *dirname)
 {
     int status;
     status = mkdir(dirname, S_IRWXU | S_IRWXG | S_IRWXO);
-
-    free(dirname);
     
     if (status != 0)
         printf("CRTDIR exit status: %d\n", status);
@@ -192,9 +205,6 @@ void chgdir(char *dirname)
 
     extstat = chdir(pwd);
 
-    free(dirname);
-    free(pwd);
-
     if (extstat != 0)
         printf("CHGDIR exit status: %d\n", extstat);
 }
@@ -208,8 +218,6 @@ void crtfile(char *filename)
 
     extstat = creat(filename, mode);
 
-    free(filename);
-
     if (extstat == -1)
         printf("CRTFILE exit status: %d\n", extstat);
 
@@ -222,8 +230,6 @@ void rmfile(char *filename)
 
     extstat = remove(filename);
     
-    free(filename);
-    
     if (extstat == -1)
         printf("RMFILE exit status: %d\n", extstat);
 }
@@ -234,9 +240,6 @@ void crtslf(char *oldname, char *newname)
     int extstat;
 
     extstat = symlink(oldname, newname);
-
-    free(oldname);
-    free(newname);
 
     if (extstat != 0)
         printf("CRTSLF exit status: %d\n");
@@ -259,18 +262,29 @@ void readslf(char *slname)
         printf("%s\n", buffer);
 }
 
+// removes symbolic link to specified file
+void rmslf(char *filename)
+{
+    int extstat;
+
+    extstat = unlink(filename);
+
+    if (extstat != 0)
+        printf("RMSLF exit status: %d\n", extstat);
+}
+
 void printhelp()
 {
     printf("crtdir - Create a directory\n"); // done
-    printf("chgdir  - Change to a directory\n"); // done
-    printf("list - List contents of current directory\n"); // done
+    printf("chgdir - Change to a directory\n"); // done
+    printf("list - Lists contents of current directory\n"); // done
     printf("crtfile - Creates a file in the current directory\n"); // done
     printf("rmfile - Deletes a file in the current directory\n"); // done
-    printf("crtslf - Create symlink to file\n"); // done
-    printf("rmslf - Remove symlink to file\n"); // 
+    printf("crtslf - Creates symlink to file\n"); // done
+    printf("rmslf - Removes symlink to file\n"); // 
     printf("readslf - Prints where the symlink is pointing to\n"); // done
-    printf("35 - Show contents of a file\n");
-    printf("40 - Create temporary text file\n");
-    printf("help - Print this somewhat useless text\n");
+    printf("35 - Shows contents of a file\n");
+    printf("40 - Creates temporary text file\n");
+    printf("help - Prints this somewhat useless text\n");
     printf("quit - Quit\n\n");
 }
