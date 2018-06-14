@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#define BUFFSIZE 80
+#define BUFFSIZE 120
 
 char** split(char*);
 void printhelp();
@@ -19,11 +19,13 @@ void rmfile(char*);
 void crtslf(char*, char*);
 void readslf(char*);
 void rmslf(char*);
+void shwfctt(char*);
 
 int main()
 {
     char *input = (char*) calloc (BUFFSIZE, sizeof(char));
     char *command, *param, *oparam;
+    const char *chgdirname;
     int num;
 	short option;
 	printf("\nWelcome!\n\n");
@@ -143,6 +145,20 @@ int main()
             }
         }
 
+        // implementacao da impressao do conteudo de um arquivo na tela
+        else if ((strcmp(command, "shwfctt") == 0) || (strcmp(command, "shwfctt\n") == 0))
+        {
+            if ((strcmp(command, "shwfctt\n") == 0))
+                printf("A file name must be specified!\n");
+            else
+            {
+                param = strtok(NULL, " ");
+                param[strlen(param)-1] = '\0';
+
+                shwfctt(param);
+            }
+        }
+
         // prints help menu
         else if (strcmp(command, "help\n")  == 0) printhelp();
         
@@ -183,19 +199,19 @@ void list(void)
 // creates a dir with the specified name
 void crtdir(char *dirname)
 {
-    int status;
-    status = mkdir(dirname, S_IRWXU | S_IRWXG | S_IRWXO);
+    int extstat;
+    extstat = mkdir(dirname, S_IRWXU | S_IRWXG | S_IRWXO);
     
-    if (status != 0)
-        printf("CRTDIR exit status: %d\n", status);
+    if (extstat != 0)
+        printf("CRTDIR exit status: %d\n", extstat);
 }
 
 // changes to the specified dir
 void chgdir(char *dirname)
 {
-    char *pwd;
+    char *pwd = (char*) calloc (BUFFSIZE, sizeof(char));
     int extstat;
-    
+
     getcwd(pwd, BUFFSIZE); // get full path to current dir
     
     /* concatenate destination directory */
@@ -273,6 +289,22 @@ void rmslf(char *filename)
         printf("RMSLF exit status: %d\n", extstat);
 }
 
+// displays the content of a file
+void shwfctt(char *filename)
+{
+    int extopenstat, cnt;
+    int lclbuff = BUFFSIZE * 12; // 12 chosen arbitrarily
+    char *buffer = (char*) calloc (lclbuff, sizeof(char));
+    
+    extopenstat = open(filename, O_RDONLY);
+
+    if (extopenstat >= 0)
+        while ((cnt = read(extopenstat, buffer, lclbuff)) > 0)
+            printf("%s", buffer);
+    
+    close(extopenstat);
+}
+
 void printhelp()
 {
     printf("crtdir - Create a directory\n"); // done
@@ -281,9 +313,9 @@ void printhelp()
     printf("crtfile - Creates a file in the current directory\n"); // done
     printf("rmfile - Deletes a file in the current directory\n"); // done
     printf("crtslf - Creates symlink to file\n"); // done
-    printf("rmslf - Removes symlink to file\n"); // 
+    printf("rmslf - Removes symlink to file\n"); // done
     printf("readslf - Prints where the symlink is pointing to\n"); // done
-    printf("35 - Shows contents of a file\n");
+    printf("shwfctt - Shows contents of a file\n"); // done
     printf("40 - Creates temporary text file\n");
     printf("help - Prints this somewhat useless text\n");
     printf("quit - Quit\n\n");
