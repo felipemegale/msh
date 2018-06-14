@@ -196,6 +196,6 @@ void printhelp()
     printf("30 - Remove symlink to file\n");
     printf("35 - Show contents of a file\n");
     printf("40 - Create temporary text file\n");
-    printf("help - Print this bunch of text\n");
-    printf("100 - Quit\n\n");
+    printf("help - Print this somewhat useless text\n");
+    printf("quit - Quit\n\n");
 }
