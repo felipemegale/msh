@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #define BUFFSIZE 80
 
@@ -13,6 +14,7 @@ void printhelp();
 void list(void);
 void crtdir(char*);
 void chgdir(char*);
+void crtfile(char*);
 
 int main()
 {
@@ -58,20 +60,43 @@ int main()
             else
             {
                 param = strtok(NULL, " ");
-                param[strlen(param)] = '\0';
+                param[strlen(param)-1] = '\0';
                 chgdir(param);
             }
         }
 
+        // implementacao de criacao de arquivo
+        else if(strcmp(command, "crtfile") == 0 || (strcmp(command, "crtfile\n") == 0))
+        {
+            if (strcmp(command, "crtfile\n") == 0)
+                printf("A file must have a name!\n");
+            else
+            {    
+                param = strtok(NULL, " ");
+                param[strlen(param)-1] = '\0';
+                crtfile(param);
+            }
+        }
+
+        // prints help menu
         else if (strcmp(command, "help\n")  == 0) printhelp();
-        else if (strcmp(command, "quit\n") != 0) printf("Invalid command!\n\n");
+        
+        // says goodbye and quits the shell
+        else if (strcmp(command, "quit\n") == 0)
+        {
+            printf("Goodbye! o/\n\n");
+            break;
+        }
 
-	} while(strcmp(command, "quit\n"));
+        else
+            printf("Invalid command!\n\n");
 
-    printf("Goodbye! o/\n\n");
+	} while(1);
+
     return 0;
 }
 
+// lists the content of the current dir
 void list(void)
 {
     DIR *dp;
@@ -90,6 +115,7 @@ void list(void)
     }
 }
 
+// creates a dir with the specified name
 void crtdir(char *dirname)
 {
     int status;
@@ -99,6 +125,7 @@ void crtdir(char *dirname)
         printf("Directory creation failed.\n");
 }
 
+// changes to the specified dir
 void chgdir(char *dirname)
 {
     char *pwd;
@@ -111,23 +138,37 @@ void chgdir(char *dirname)
     strcat(pwd, dirname);
     strcat(pwd, "/");
 
-    printf("Changing to %s\n", pwd);
-
     extstat = chdir(pwd);
-    printf("CHGDIR exit status: %d\n", extstat);
+
+    if (extstat != 0)
+        printf("CHGDIR exit status: %d\n", extstat);
+}
+
+// creates a file in current dir
+void crtfile(char *filename)
+{
+    int extstat;
+
+    mode_t mode = S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH;
+
+    extstat = creat(filename, mode);
+
+    if (extstat == -1)
+        printf("CRTFILE exit status: %d\n", extstat);
+
 }
 
 void printhelp()
 {
-    printf("crtdir - Create dir\n"); // done
-    printf("chgdir  - Change dir\n"); // 
-    printf("list - List dir\n"); // done
-    printf("15 - Create file\n");
+    printf("crtdir - Create a directory\n"); // done
+    printf("chgdir  - Change to a directory\n"); // done
+    printf("list - List contents of current directory\n"); // done
+    printf("crtfile - Creates a file in the current directory\n"); // done
     printf("20 - Delete file\n");
     printf("25 - Create symlink to file\n");
     printf("30 - Remove symlink to file\n");
     printf("35 - Show contents of a file\n");
     printf("40 - Create temporary text file\n");
     printf("help - Print this bunch of text\n");
-    printf("100 - Quit\n");
+    printf("100 - Quit\n\n");
 }
