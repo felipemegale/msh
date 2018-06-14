@@ -17,6 +17,7 @@ void chgdir(char*);
 void crtfile(char*);
 void rmfile(char*);
 void crtslf(char*, char*);
+void readslf(char*);
 
 int main()
 {
@@ -113,6 +114,20 @@ int main()
             }
         }
 
+        // implementacao da leitura de um link simbolico
+        else if ((strcmp(command, "readslf") == 0) || (strcmp(command, "readslf\n") == 0))
+        {
+            if (strcmp(command, "readslf\n") == 0)
+                printf("A symlink must be specified!\n");
+            else
+            {
+                param = strtok(NULL, " ");
+                param[strlen(param)-1] = '\0';
+
+                readslf(param);
+            }
+        }
+
         // prints help menu
         else if (strcmp(command, "help\n")  == 0) printhelp();
         
@@ -155,6 +170,8 @@ void crtdir(char *dirname)
 {
     int status;
     status = mkdir(dirname, S_IRWXU | S_IRWXG | S_IRWXO);
+
+    free(dirname);
     
     if (status != 0)
         printf("CRTDIR exit status: %d\n", status);
@@ -175,6 +192,9 @@ void chgdir(char *dirname)
 
     extstat = chdir(pwd);
 
+    free(dirname);
+    free(pwd);
+
     if (extstat != 0)
         printf("CHGDIR exit status: %d\n", extstat);
 }
@@ -188,6 +208,8 @@ void crtfile(char *filename)
 
     extstat = creat(filename, mode);
 
+    free(filename);
+
     if (extstat == -1)
         printf("CRTFILE exit status: %d\n", extstat);
 
@@ -200,6 +222,8 @@ void rmfile(char *filename)
 
     extstat = remove(filename);
     
+    free(filename);
+    
     if (extstat == -1)
         printf("RMFILE exit status: %d\n", extstat);
 }
@@ -211,11 +235,29 @@ void crtslf(char *oldname, char *newname)
 
     extstat = symlink(oldname, newname);
 
+    free(oldname);
+    free(newname);
+
     if (extstat != 0)
         printf("CRTSLF exit status: %d\n");
 }
 
+// reads the content of a symbolic link
+void readslf(char *slname)
+{
+    char *buffer = NULL;
+    int nchars;
 
+    buffer = (char*) realloc(buffer, BUFFSIZE);
+    nchars = readlink(slname, buffer, BUFFSIZE);
+
+    strcat(slname, "\0");
+
+    if (nchars < 0)
+        free(buffer);
+    else if (nchars <= BUFFSIZE)
+        printf("%s\n", buffer);
+}
 
 void printhelp()
 {
@@ -226,6 +268,7 @@ void printhelp()
     printf("rmfile - Deletes a file in the current directory\n"); // done
     printf("crtslf - Create symlink to file\n"); // done
     printf("rmslf - Remove symlink to file\n"); // 
+    printf("readslf - Prints where the symlink is pointing to\n"); // done
     printf("35 - Show contents of a file\n");
     printf("40 - Create temporary text file\n");
     printf("help - Print this somewhat useless text\n");
