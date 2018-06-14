@@ -16,11 +16,12 @@ void crtdir(char*);
 void chgdir(char*);
 void crtfile(char*);
 void rmfile(char*);
+void crtslf(char*, char*);
 
 int main()
 {
     char *input = (char*) calloc (BUFFSIZE, sizeof(char));
-    char *command, *param;
+    char *command, *param, *oparam;
     int num;
 	short option;
 	printf("\nWelcome!\n\n");
@@ -83,12 +84,32 @@ int main()
         else if ((strcmp(command, "rmfile") == 0) || (strcmp(command, "rmfile\n") == 0))
         {
             if (strcmp(command, "rmfile\n") == 0)
-                printf("A FILE name must be specified!\n");
+                printf("A file name must be specified!\n");
             else
             {
                 param = strtok(NULL, " ");
                 param[strlen(param)-1] = '\0';
                 rmfile(param);
+            }
+        }
+
+        // implementacao da criacao de link simbolico
+        else if ((strcmp(command, "crtslf") == 0) || (strcmp(command, "crtslf\n") == 0))
+        {
+            if (strcmp(command, "crtslf\n") == 0)
+                printf("A file name must be specified!\n");
+            else
+            {
+                param = strtok(NULL, " ");
+                oparam = strtok(NULL, " ");
+
+                if (oparam != NULL)
+                {
+                    oparam[strlen(oparam)-1] = '\0';
+                    crtslf(param, oparam);
+                }
+                else
+                    printf("Symbolic link name missing!\n");
             }
         }
 
@@ -136,7 +157,7 @@ void crtdir(char *dirname)
     status = mkdir(dirname, S_IRWXU | S_IRWXG | S_IRWXO);
     
     if (status != 0)
-        printf("Directory creation failed.\n");
+        printf("CRTDIR exit status: %d\n", status);
 }
 
 // changes to the specified dir
@@ -183,6 +204,17 @@ void rmfile(char *filename)
         printf("RMFILE exit status: %d\n", extstat);
 }
 
+// creates a symbolic link to a file
+void crtslf(char *oldname, char *newname)
+{
+    int extstat;
+
+    extstat = symlink(oldname, newname);
+
+    if (extstat != 0)
+        printf("CRTSLF exit status: %d\n");
+}
+
 
 
 void printhelp()
@@ -192,8 +224,8 @@ void printhelp()
     printf("list - List contents of current directory\n"); // done
     printf("crtfile - Creates a file in the current directory\n"); // done
     printf("rmfile - Deletes a file in the current directory\n"); // done
-    printf("25 - Create symlink to file\n");
-    printf("30 - Remove symlink to file\n");
+    printf("crtslf - Create symlink to file\n"); // done
+    printf("rmslf - Remove symlink to file\n"); // 
     printf("35 - Show contents of a file\n");
     printf("40 - Create temporary text file\n");
     printf("help - Print this somewhat useless text\n");
