@@ -372,6 +372,6 @@ void printhelp()
     printf("shwfctt <filename> - Shows contents of a file\n"); // done
     printf("crttmpf <filename> - Creates temporary text file\n"); // done?????
     printf("help - Prints this somewhat useless text\n");
-    printf("whoisresponsibleforthis - Prints the two YAWCS who wrote this crap.\n");
+    printf("whoisresponsibleforthis - Prints the two YAWCS who wrote this crap\n");
     printf("quit - Quit\n\n");
 }
