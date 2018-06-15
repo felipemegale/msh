@@ -354,16 +354,16 @@ void crttmpf(char *filecontent)
 
 void printhelp()
 {
-    printf("crtdir - Create a directory\n"); // done
-    printf("chgdir - Change to a directory\n"); // done
+    printf("crtdir <dirname> - Create a directory\n"); // done
+    printf("chgdir <dirname> - Change to a directory\n"); // done
     printf("list - Lists contents of current directory\n"); // done
-    printf("crtfile - Creates a file in the current directory\n"); // done
-    printf("rmfile - Deletes a file in the current directory\n"); // done
-    printf("crtslf - Creates symlink to file\n"); // done
-    printf("rmslf - Removes symlink to file\n"); // done
-    printf("readslf - Prints where the symlink is pointing to\n"); // done
-    printf("shwfctt - Shows contents of a file\n"); // done
-    printf("crttmpf - Creates temporary text file\n"); // done?????
+    printf("crtfile <filename> - Creates a file in the current directory\n"); // done
+    printf("rmfile <filename> - Deletes a file in the current directory\n"); // done
+    printf("crtslf <filename> <symlink name> - Creates symlink to file\n"); // done
+    printf("rmslf <file> - Removes symlink to file\n"); // done
+    printf("readslf <symlink name> - Prints where the symlink is pointing to\n"); // done
+    printf("shwfctt <filename> - Shows contents of a file\n"); // done
+    printf("crttmpf <filename> - Creates temporary text file\n"); // done?????
     printf("help - Prints this somewhat useless text\n");
     printf("whoisresponsibleforthis - Prints the two YAWCS who wrote this crap.\n");
     printf("quit - Quit\n\n");
