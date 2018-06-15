@@ -1,3 +1,9 @@
+/*
+ msh shell interpreter.
+ @Author Felipe Megale
+ @Author Guilherme Galvao
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,6 +12,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <errno.h>
 
 #define BUFFSIZE 120
 
@@ -216,9 +223,7 @@ void list(void)
         (void) closedir(dp);
     }
     else
-    {
         perror("Nem abriu kk");
-    }
 }
 
 // creates a dir with the specified name
@@ -228,7 +233,7 @@ void crtdir(char *dirname)
     extstat = mkdir(dirname, S_IRWXU | S_IRWXG | S_IRWXO);
     
     if (extstat != 0)
-        printf("CRTDIR exit status: %d\n", extstat);
+        printf("CRTDIR exit status: %s\n", strerror(errno));
 }
 
 // changes to the specified dir
@@ -247,7 +252,7 @@ void chgdir(char *dirname)
     extstat = chdir(pwd);
 
     if (extstat != 0)
-        printf("CHGDIR exit status: %d\n", extstat);
+        printf("CHGDIR exit status: %s\n", strerror(errno));
 }
 
 // creates a file in current dir
@@ -260,7 +265,7 @@ void crtfile(char *filename)
     extstat = creat(filename, mode);
 
     if (extstat == -1)
-        printf("CRTFILE exit status: %d\n", extstat);
+        printf("CRTFILE exit status: %s\n", strerror(errno));
 
 }
 
@@ -272,7 +277,7 @@ void rmfile(char *filename)
     extstat = remove(filename);
     
     if (extstat == -1)
-        printf("RMFILE exit status: %d\n", extstat);
+        printf("RMFILE exit status: %s\n", strerror(errno));
 }
 
 // creates a symbolic link to a file
@@ -283,7 +288,7 @@ void crtslf(char *oldname, char *newname)
     extstat = symlink(oldname, newname);
 
     if (extstat != 0)
-        printf("CRTSLF exit status: %d\n", extstat);
+        printf("CRTSLF exit status: %s\n", strerror(errno));
 }
 
 // reads the content of a symbolic link
@@ -311,7 +316,7 @@ void rmslf(char *filename)
     extstat = unlink(filename);
 
     if (extstat != 0)
-        printf("RMSLF exit status: %d\n", extstat);
+        printf("RMSLF exit status: %s\n", strerror(errno));
 }
 
 // displays the content of a file
@@ -326,6 +331,8 @@ void shwfctt(char *filename)
     if (extopenstat >= 0)
         while ((cnt = read(extopenstat, buffer, lclbuff)) > 0)
             printf("%s", buffer);
+    else
+        printf("SHWFCTT exit status: %s\n", strerror(errno));
     
     close(extopenstat);
 }
