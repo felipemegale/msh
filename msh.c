@@ -177,6 +177,13 @@ int main()
             }
         }
 
+        // mostra quem fez isso
+        else if (strcmp(command, "whoisresponsibleforthis\n") == 0)
+            printf("Felipe Marques Megale - 476280\nGuilherme Galvao 552135\n\n");
+
+        else if(strcmp(command, "whatisyawcs\n") == 0)
+            printf("Yet Another Wannabe Computer Scientist\n");
+
         // prints help menu
         else if (strcmp(command, "help\n")  == 0) printhelp();
         
@@ -356,7 +363,8 @@ void printhelp()
     printf("rmslf - Removes symlink to file\n"); // done
     printf("readslf - Prints where the symlink is pointing to\n"); // done
     printf("shwfctt - Shows contents of a file\n"); // done
-    printf("crttmpf - Creates temporary text file\n"); // 
+    printf("crttmpf - Creates temporary text file\n"); // done?????
     printf("help - Prints this somewhat useless text\n");
+    printf("whoisresponsibleforthis - Prints the two YAWCS who wrote this crap.\n");
     printf("quit - Quit\n\n");
 }
