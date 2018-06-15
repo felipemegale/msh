@@ -370,7 +370,7 @@ void printhelp()
     printf("rmslf <file> - Removes symlink to file\n"); // done
     printf("readslf <symlink name> - Prints where the symlink is pointing to\n"); // done
     printf("shwfctt <filename> - Shows contents of a file\n"); // done
-    printf("crttmpf <filename> - Creates temporary text file\n"); // done?????
+    printf("crttmpf <filename> - Creates temporary text file\n"); // done
     printf("help - Prints this somewhat useless text\n");
     printf("whoisresponsibleforthis - Prints the two YAWCS who wrote this crap\n");
     printf("quit - Quit\n\n");
