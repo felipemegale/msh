@@ -20,6 +20,7 @@ void crtslf(char*, char*);
 void readslf(char*);
 void rmslf(char*);
 void shwfctt(char*);
+void crttmpf(char *);
 
 int main()
 {
@@ -159,6 +160,23 @@ int main()
             }
         }
 
+        // implementacao da criacao de arquivos temporarios
+        else if ((strcmp(command, "crttmpf") == 0) || (strcmp(command, "crttmpf\n") == 0))
+        {
+            if (strcmp(command, "crttmpf\n") == 0)
+                crttmpf(NULL);
+            else
+            {
+                param = strtok(NULL, " ");
+                param[strlen(param)-1] = '\0';
+
+                if (strlen(param) >= BUFFSIZE)
+                    printf("Max of %d characters only.\n", BUFFSIZE);
+                else
+                    crttmpf(param);
+            }
+        }
+
         // prints help menu
         else if (strcmp(command, "help\n")  == 0) printhelp();
         
@@ -258,7 +276,7 @@ void crtslf(char *oldname, char *newname)
     extstat = symlink(oldname, newname);
 
     if (extstat != 0)
-        printf("CRTSLF exit status: %d\n");
+        printf("CRTSLF exit status: %d\n", extstat);
 }
 
 // reads the content of a symbolic link
@@ -305,6 +323,28 @@ void shwfctt(char *filename)
     close(extopenstat);
 }
 
+// creates a temporary file
+void crttmpf(char *filecontent)
+{
+    FILE *tfp;
+
+    tfp = tmpfile();
+
+    if (tfp == NULL)
+        printf("Could not create file. Unexpected behavior.\n");
+    else if (filecontent != NULL)
+    {
+        fwrite(filecontent, sizeof(char), BUFFSIZE, tfp);
+        // fclose(tfp);
+    }
+    else
+    {
+        fwrite("TMP FILE HEADER\n", sizeof(char), strlen("TMP FILE HEADER\n"), tfp);
+        // fclose(tfp);
+    }
+
+}
+
 void printhelp()
 {
     printf("crtdir - Create a directory\n"); // done
@@ -316,7 +356,7 @@ void printhelp()
     printf("rmslf - Removes symlink to file\n"); // done
     printf("readslf - Prints where the symlink is pointing to\n"); // done
     printf("shwfctt - Shows contents of a file\n"); // done
-    printf("40 - Creates temporary text file\n");
+    printf("crttmpf - Creates temporary text file\n"); // 
     printf("help - Prints this somewhat useless text\n");
     printf("quit - Quit\n\n");
 }
