@@ -1,41 +1,16 @@
-/*
- msh shell interpreter.
- @Author Felipe Megale
- @Author Guilherme Galvao
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <dirent.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <errno.h>
+#include "../sl/sl.h"
+#include "../help/help.h"
+#include "../files/files.h"
+#include "../dirs/dirs.h"
 
 #define BUFFSIZE 120
-
-char** split(char*);
-void printhelp();
-void list(void);
-void crtdir(char*);
-void chgdir(char*);
-void crtfile(char*);
-void rmfile(char*);
-void crtslf(char*, char*);
-void readslf(char*);
-void rmslf(char*);
-void shwfctt(char*);
-void crttmpf(char *);
 
 int main()
 {
     char *input = (char*) calloc (BUFFSIZE, sizeof(char));
     char *command, *param, *oparam;
-    const char *chgdirname;
-    int num;
-	short option;
 	printf("\nWelcome!\n\n");
 	
 	do
@@ -207,173 +182,4 @@ int main()
 	} while(1);
 
     return 0;
-}
-
-// lists the content of the current dir
-void list(void)
-{
-    DIR *dp;
-    struct dirent *ep;
-    dp = opendir("./");
-
-    if (dp != NULL)
-    {
-        while (ep = readdir(dp))
-            puts(ep->d_name);
-        (void) closedir(dp);
-    }
-    else
-        perror("Nem abriu kk");
-}
-
-// creates a dir with the specified name
-void crtdir(char *dirname)
-{
-    int extstat;
-    extstat = mkdir(dirname, S_IRWXU | S_IRWXG | S_IRWXO);
-    
-    if (extstat != 0)
-        printf("CRTDIR exit status: %s\n", strerror(errno));
-}
-
-// changes to the specified dir
-void chgdir(char *dirname)
-{
-    char *pwd = (char*) calloc (BUFFSIZE, sizeof(char));
-    int extstat;
-
-    getcwd(pwd, BUFFSIZE); // get full path to current dir
-    
-    /* concatenate destination directory */
-    strcat(pwd, "/");
-    strcat(pwd, dirname);
-    strcat(pwd, "/");
-
-    extstat = chdir(pwd);
-
-    if (extstat != 0)
-        printf("CHGDIR exit status: %s\n", strerror(errno));
-
-    free(pwd);
-}
-
-// creates a file in current dir
-void crtfile(char *filename)
-{
-    int extstat;
-
-    mode_t mode = S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH;
-
-    extstat = creat(filename, mode);
-
-    if (extstat == -1)
-        printf("CRTFILE exit status: %s\n", strerror(errno));
-
-}
-
-// removes a file in the current dir
-void rmfile(char *filename)
-{
-    int extstat;
-
-    extstat = remove(filename);
-    
-    if (extstat == -1)
-        printf("RMFILE exit status: %s\n", strerror(errno));
-}
-
-// creates a symbolic link to a file
-void crtslf(char *oldname, char *newname)
-{
-    int extstat;
-
-    extstat = symlink(oldname, newname);
-
-    if (extstat != 0)
-        printf("CRTSLF exit status: %s\n", strerror(errno));
-}
-
-// reads the content of a symbolic link
-void readslf(char *slname)
-{
-    char *buffer = NULL;
-    int nchars;
-
-    buffer = (char*) realloc(buffer, BUFFSIZE);
-    nchars = readlink(slname, buffer, BUFFSIZE);
-
-    strcat(slname, "\0");
-
-    if (nchars < 0)
-        free(buffer);
-    else if (nchars <= BUFFSIZE)
-        printf("%s\n", buffer);
-}
-
-// removes symbolic link to specified file
-void rmslf(char *filename)
-{
-    int extstat;
-
-    extstat = unlink(filename);
-
-    if (extstat != 0)
-        printf("RMSLF exit status: %s\n", strerror(errno));
-}
-
-// displays the content of a file
-void shwfctt(char *filename)
-{
-    int extopenstat, cnt;
-    int lclbuff = BUFFSIZE * 12; // 12 chosen arbitrarily
-    char *buffer = (char*) calloc (lclbuff, sizeof(char));
-    
-    extopenstat = open(filename, O_RDONLY);
-
-    if (extopenstat >= 0)
-        while ((cnt = read(extopenstat, buffer, lclbuff)) > 0)
-            printf("%s", buffer);
-    else
-        printf("SHWFCTT exit status: %s\n", strerror(errno));
-    
-    close(extopenstat);
-}
-
-// creates a temporary file
-void crttmpf(char *filecontent)
-{
-    FILE *tfp;
-
-    tfp = tmpfile();
-
-    if (tfp == NULL)
-        printf("Could not create file. Unexpected behavior.\n");
-    else if (filecontent != NULL)
-    {
-        fwrite(filecontent, sizeof(char), BUFFSIZE, tfp);
-        // fclose(tfp);
-    }
-    else
-    {
-        fwrite("TMP FILE HEADER\n", sizeof(char), strlen("TMP FILE HEADER\n"), tfp);
-        // fclose(tfp);
-    }
-
-}
-
-void printhelp()
-{
-    printf("crtdir <dirname> - Create a directory\n"); // done
-    printf("chgdir <dirname> - Change to a directory\n"); // done
-    printf("list - Lists contents of current directory\n"); // done
-    printf("crtfile <filename> - Creates a file in the current directory\n"); // done
-    printf("rmfile <filename> - Deletes a file in the current directory\n"); // done
-    printf("crtslf <filename> <symlink name> - Creates symlink to file\n"); // done
-    printf("rmslf <file> - Removes symlink to file\n"); // done
-    printf("readslf <symlink name> - Prints where the symlink is pointing to\n"); // done
-    printf("shwfctt <filename> - Shows contents of a file\n"); // done
-    printf("crttmpf <filename> - Creates temporary text file\n"); // done
-    printf("help - Prints this somewhat useless text\n");
-    printf("whoisresponsibleforthis - Prints the two YAWCS who wrote this crap\n");
-    printf("quit - Quit\n\n");
 }
