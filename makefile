@@ -46,4 +46,4 @@ $(OBJDIR)/list.o: dirs/list.c dirs/dirs.h
 	cc -c dirs/list.c -o $(OBJDIR)/list.o
 
 clean:
-	rm msh $(objects); rm -r out
+	rm msh $(objects)
