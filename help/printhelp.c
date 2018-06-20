@@ -14,5 +14,5 @@ void printhelp()
     printf("crttmpf <filename> - Creates temporary text file\n");
     printf("help - Prints this somewhat useless text\n");
     printf("whoisresponsibleforthis - Prints the two YAWCS who wrote this crap\n");
-    printf("quit - Quit\n\n");
+    printf("exit - Exit this program\n\n");
 }

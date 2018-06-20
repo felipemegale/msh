@@ -1,38 +1,49 @@
-msh: out/crtslf.o out/readslf.o out/rmslf.o out/printhelp.o out/crtfile.o out/crttmpf.o out/rmfile.o out/shwfctt.o out/chgdir.o out/crtdir.o out/list.o
-	 cc -c -o msh out/crtslf.o out/readslf.o out/rmslf.o out/printhelp.o out/crtfile.o out/crttmpf.o out/rmfile.o out/shwfctt.o out/chgdir.o out/crtdir.o out/list.o
+OBJDIR = out
 
-out/crtslf.o: sl/crtslf.c sl/sl.h
-			  cc -c sl/crtslf.c
+objects = $(addprefix $(OBJDIR)/, \
+    crtslf.o readslf.o rmslf.o \
+    printhelp.o crtfile.o crttmpf.o \
+    rmfile.o shwfctt.o chgdir.o \
+    crtdir.o list.o main.o)
 
-out/readslf.o: sl/readslf.c sl/sl.h
-			  cc -c sl/readslf.c
+msh: $(objects)
+	cc -o msh $(objects)
+	 
+$(OBJDIR)/main.o: main/main.c
+	cc -c main/main.c -o $(OBJDIR)/main.o
 
-out/rmslf.o: sl/rmslf.c sl/sl.h
-			  cc -c sl/rmslf.c
+$(OBJDIR)/crtslf.o: sl/crtslf.c sl/sl.h
+	cc -c sl/crtslf.c -o $(OBJDIR)/crtslf.o
 
-out/printhelp.o: help/printhelp.c help/help.h
-			  cc -c help/printhelp.c
+$(OBJDIR)/readslf.o: sl/readslf.c sl/sl.h
+	cc -c sl/readslf.c -o $(OBJDIR)/readslf.o
 
-out/crtfile.o: files/crtfile.c files/files.h
-			  cc -c files/crtfile.c
+$(OBJDIR)/rmslf.o: sl/rmslf.c sl/sl.h
+	cc -c sl/rmslf.c -o $(OBJDIR)/rmslf.o
 
-out/crttmpf.o: files/crttmpf.c files/files.h
-			  cc -c files/crttmpf.c
+$(OBJDIR)/printhelp.o: help/printhelp.c help/help.h
+	cc -c help/printhelp.c -o $(OBJDIR)/printhelp.o
 
-out/rmfile.o: files/rmfile.c files/files.h
-			  cc -c files/rmfile.c
+$(OBJDIR)/crtfile.o: files/crtfile.c files/files.h
+	cc -c files/crtfile.c -o $(OBJDIR)/crtfile.o
 
-out/shwfctt.o: files/shwfctt.c files/files.h
-			  cc -c files/shwfctt.c
+$(OBJDIR)/crttmpf.o: files/crttmpf.c files/files.h
+	cc -c files/crttmpf.c -o $(OBJDIR)/crttmpf.o
 
-out/chgdir.o: dirs/chgdir.c dirs/dirs.h
-			  cc -c dirs/chgdir.c
+$(OBJDIR)/rmfile.o: files/rmfile.c files/files.h
+	cc -c files/rmfile.c -o $(OBJDIR)/rmfile.o
 
-out/crtdir.o: dirs/crtdir.c dirs/dirs.h
-			  cc -c dirs/crtdir.c
+$(OBJDIR)/shwfctt.o: files/shwfctt.c files/files.h
+	cc -c files/shwfctt.c -o $(OBJDIR)/shwfctt.o
 
-out/list.o: dirs/list.c dirs/dirs.h
-			 cc -c dirs/list.c
+$(OBJDIR)/chgdir.o: dirs/chgdir.c dirs/dirs.h
+	cc -c dirs/chgdir.c -o $(OBJDIR)/chgdir.o
+
+$(OBJDIR)/crtdir.o: dirs/crtdir.c dirs/dirs.h
+	cc -c dirs/crtdir.c -o $(OBJDIR)/crtdir.o
+
+$(OBJDIR)/list.o: dirs/list.c dirs/dirs.h
+	cc -c dirs/list.c -o $(OBJDIR)/list.o
 
 clean:
-	rm out/*
+	rm msh $(objects)

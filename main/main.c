@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../sl/sl.h"
 #include "../help/help.h"
 #include "../files/files.h"
@@ -170,7 +171,7 @@ int main()
         else if (strcmp(command, "help\n")  == 0) printhelp();
         
         // says goodbye and quits the shell
-        else if (strcmp(command, "quit\n") == 0)
+        else if (strcmp(command, "exit\n") == 0)
         {
             printf("Goodbye! o/\n\n");
             break;
